@@ -154,6 +154,213 @@ Flowise support different environment variables to configure your instance. You 
 
 [Flowise Docs](https://docs.flowiseai.com/)
 
+
+# 🧠 Flowise Installing Guide with Docker & Portainer
+
+Welcome to this **ultimate guide** for installing **Flowise** — an open-source **UI for LLM-based workflows** — on **Ubuntu 24.04** using **Docker** and **Portainer**.  
+This **comprehensive step-by-step tutorial** walks you through installing Flowise with **SSL (HTTPS)** for secure access, managed beautifully via Portainer.
+
+---
+
+## 🚀 Prerequisites
+
+### 💾 Software Requirements
+- ✅ **Ubuntu 24.04 LTS** (fresh installation is best)  
+- ✅ **Docker** (v28+)  
+- ✅ **Docker Compose Plugin**  
+- ✅ **Portainer (CE)** for container management  
+- ✅ **acme.sh** for free Let's Encrypt SSL certificates  
+- ✅ **A domain name** (e.g., `flowise.yourdomain.com`) pointing to your server  
+
+### 🖥️ Hardware Requirements (Minimum)
+- 💾 2GB RAM (4GB+ recommended)  
+- 💿 10GB Disk space  
+- 🌐 A public IP (for SSL validation)  
+
+---
+
+## 🏗️ Step-by-Step Installation
+
+---
+
+### 1️⃣ Update & Upgrade System
+```bash
+sudo apt update -y && sudo apt upgrade -y
+```
+
+---
+
+### 2️⃣ Install Docker & Docker Compose Plugin
+```bash
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+✅ **Check Docker:**
+```bash
+docker --version
+```
+
+---
+
+### 3️⃣ Install Portainer (UI for Docker)
+```bash
+docker volume create portainer_data
+
+docker run -d -p 8000:8000 -p 9443:9443 --name portainer \
+    --restart=always \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v portainer_data:/data \
+    portainer/portainer-ce:latest
+```
+
+🔗 Access Portainer at:  
+```
+https://[YOUR_SERVER_IP]:9443
+```
+
+🔑 Set a secure admin password & connect to **local** Docker.
+
+---
+
+### 4️⃣ Install acme.sh (For SSL Certificate)
+```bash
+sudo apt install curl socat -y
+curl https://get.acme.sh | sh
+source ~/.bashrc
+
+~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+~/.acme.sh/acme.sh --register-account -m your-email@example.com
+```
+
+---
+
+### 5️⃣ Generate SSL Certificates for Flowise Domain
+```bash
+~/.acme.sh/acme.sh --issue -d flowise.yourdomain.com --standalone
+
+sudo mkdir -p /etc/ssl/private /etc/ssl/certs
+
+~/.acme.sh/acme.sh --installcert -d flowise.yourdomain.com \
+--key-file /etc/ssl/private/flowise_private.key \
+--fullchain-file /etc/ssl/certs/flowise_certificate.crt
+
+sudo chown 1000:1000 /etc/ssl/private/flowise_private.key
+sudo chown 1000:1000 /etc/ssl/certs/flowise_certificate.crt
+
+sudo chmod 600 /etc/ssl/private/flowise_private.key
+sudo chmod 644 /etc/ssl/certs/flowise_certificate.crt
+```
+
+---
+
+### 6️⃣ Deploy Flowise via Portainer with SSL
+
+#### 🛠 Steps in Portainer:
+
+1. Go to **Volumes** → **+ Add volume**  
+```
+Name: flowise_data
+```
+
+2. Go to **Containers** → **+ Add container**
+
+#### 🔧 Basic Config:
+```
+Name: flowise
+Image: flowiseai/flowise:latest
+```
+
+#### 🔌 Port Mapping:
+```
+Host: 3443
+Container: 3000
+```
+
+#### 📂 Volumes:
+- `/etc/ssl/private/flowise_private.key` → `/ssl/flowise_private.key` (bind)
+- `/etc/ssl/certs/flowise_certificate.crt` → `/ssl/flowise_certificate.crt` (bind)
+- `flowise_data` → `/root/.flowise` (volume)
+
+#### ⚙️ Environment Variables:
+```
+FLOWISE_USERNAME=admin
+FLOWISE_PASSWORD=your_secure_password
+PORT=3000
+SSL_KEY_PATH=/ssl/flowise_private.key
+SSL_CERT_PATH=/ssl/flowise_certificate.crt
+FLOWISE_SECURE=true
+```
+
+✅ **Click "Deploy the container"**
+
+---
+
+### 7️⃣ Access Flowise Dashboard
+Open in browser:  
+```
+https://flowise.yourdomain.com:3443
+```
+
+Use your `admin` credentials to login.
+
+---
+
+## 🔧 Maintenance & Tips
+
+### 🔄 Auto-renew SSL:
+```bash
+~/.acme.sh/acme.sh --renew -d flowise.yourdomain.com --force
+docker restart flowise
+```
+
+---
+
+### 📜 View Logs:
+```bash
+docker logs flowise
+```
+
+---
+
+### ♻️ Restart / Stop Container:
+```bash
+docker restart flowise
+docker stop flowise
+```
+
+---
+
+### ⚠️ Optional - Reverse Proxy with Nginx:
+For production-ready routing on port 443, consider Nginx with a proxy to `localhost:3443`.
+
+---
+
+## 🎉 All Done!
+
+You’ve now installed and secured **Flowise** on Ubuntu 24.04 using **Docker**, **Portainer**, and **HTTPS**.  
+Start building your AI workflows with peace of mind and full control! 🚀
+
+---
+
+## 📬 Contact & Support
+
+💬 **Need help or consulting? Let’s talk!**  
+🌐 **Website:** [https://ava-ertebat.ir](https://ava-ertebat.ir)  
+📧 **Email (Support):** support@ava-ertebat.ir  
+📧 **Email (Personal):** omidswordfish@gmail.com  
+📱 **WhatsApp:** [Chat on WhatsApp](https://wa.me/989163422797?text=Hi%20there!%20Need%20help%20with%20Flowise%20installation%20guide.)
+
+
+
+
 ## 🌐 Self Host
 
 Deploy Flowise self-hosted in your existing infrastructure, we support various [deployments](https://docs.flowiseai.com/configuration/deployment)
