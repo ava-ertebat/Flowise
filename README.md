@@ -291,12 +291,23 @@ Container: 3000
 
 #### ⚙️ Environment Variables:
 ```
-FLOWISE_USERNAME=admin
-FLOWISE_PASSWORD=your_secure_password
-PORT=3000
-SSL_KEY_PATH=/ssl/flowise_private.key
-SSL_CERT_PATH=/ssl/flowise_certificate.crt
-FLOWISE_SECURE=true
+Name:FLOWISE_USERNAME
+value:admin
+
+Name:FLOWISE_PASSWOR
+value:your_secure_password
+
+PORT
+value:3000
+
+Name:SSL_KEY_PATH
+value:/ssl/flowise_private.key
+
+Name:SSL_CERT_PATH
+value:/ssl/flowise_certificate.crt
+
+Name:FLOWISE_SECURE
+value:true
 ```
 
 ✅ **Click "Deploy the container"**
