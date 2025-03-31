@@ -285,9 +285,9 @@ Container: 3000
 ```
 
 #### 📂 Volumes:
-- container:`/etc/ssl/private/flowise_private.key` → volume:`/ssl/flowise_private.key` (bind)
-- container:`/etc/ssl/certs/flowise_certificate.crt` → volume:`/ssl/flowise_certificate.crt` (bind)
-- container:`flowise_data` → volume:`/root/.flowise` (volume)
+- container:`/etc/ssl/private/flowise_private.key` → volume:`/ssl/flowise_private.key` → (Bind Mode)
+- container:`/etc/ssl/certs/flowise_certificate.crt` → volume:`/ssl/flowise_certificate.crt` → (Bind Mode)
+- container:`flowise_data` → volume:`/root/.flowise` → (volume Mode)
 
 #### ⚙️ Environment Variables:
 ```
