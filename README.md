@@ -290,7 +290,7 @@ Container: 3000
 - container:`flowise_data` → volume:`/root/.flowise` → (Writable) and (volume Mode)
 
 #### ⚙️ Environment Variables:
-
+```
 - Name:`FLOWISE_USERNAME` → `value:admin`
 
 - Name:`FLOWISE_PASSWOR` → value:`your_secure_password`
@@ -302,7 +302,7 @@ Container: 3000
 - Name:`SSL_CERT_PATH` → value:`/ssl/flowise_certificate.crt`
 
 - Name:FLOWISE_SECURE → value:true
-
+```
 
 ✅ **Click "Deploy the container"**
 
