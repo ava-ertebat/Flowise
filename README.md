@@ -285,29 +285,23 @@ Container: 3000
 ```
 
 #### 📂 Volumes:
-- `/etc/ssl/private/flowise_private.key` → `/ssl/flowise_private.key` (bind)
-- `/etc/ssl/certs/flowise_certificate.crt` → `/ssl/flowise_certificate.crt` (bind)
-- `flowise_data` → `/root/.flowise` (volume)
+- container:`/etc/ssl/private/flowise_private.key` → volume:`/ssl/flowise_private.key` (bind)
+- container:`/etc/ssl/certs/flowise_certificate.crt` → volume:`/ssl/flowise_certificate.crt` (bind)
+- container:`flowise_data` → volume:`/root/.flowise` (volume)
 
 #### ⚙️ Environment Variables:
 ```
-Name:FLOWISE_USERNAME
-value:admin
+- Name:`FLOWISE_USERNAME` → `value:admin`
 
-Name:FLOWISE_PASSWOR
-value:your_secure_password
+- Name:`FLOWISE_PASSWOR` → value:`your_secure_password`
 
-PORT
-value:3000
+- Name:`PORT` → value:`3000`
 
-Name:SSL_KEY_PATH
-value:/ssl/flowise_private.key
+- Name:`SSL_KEY_PATH` → value:`/ssl/flowise_private.key`
 
-Name:SSL_CERT_PATH
-value:/ssl/flowise_certificate.crt
+- Name:`SSL_CERT_PATH` → value:`/ssl/flowise_certificate.crt`
 
-Name:FLOWISE_SECURE
-value:true
+- Name:FLOWISE_SECURE → value:true
 ```
 
 ✅ **Click "Deploy the container"**
